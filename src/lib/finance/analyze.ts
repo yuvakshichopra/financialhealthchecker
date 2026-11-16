@@ -24,21 +24,21 @@ export function computeRunway(cash: number, monthlyBurn: number): number {
 
 /** Piecewise-linear interpolation through sorted [x, y] points, clamped at both ends. */
 function interp(x: number, pts: [number, number][]): number {
-  if (x <= pts[0][0]) return pts[0][1];
+  if (x <= pts[0]![0]) return pts[0]![1];
   for (let i = 1; i < pts.length; i++) {
-    const [x1, y1] = pts[i];
-    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i]!;
+    const [x0, y0] = pts[i - 1]!;
     if (x <= x1) return y0 + ((x - x0) / (x1 - x0)) * (y1 - y0);
   }
-  return pts[pts.length - 1][1];
+  return pts[pts.length - 1]![1];
 }
 
 /** Compound monthly growth rate (%) across the last `window` months. */
 function monthlyGrowth(values: number[], window = 6): number | null {
   const v = values.slice(-window);
   if (v.length < 2) return null;
-  const first = v[0];
-  const last = v[v.length - 1];
+  const first = v[0]!;
+  const last = v[v.length - 1]!;
   if (first <= 0 || last <= 0) return null;
   return (Math.pow(last / first, 1 / (v.length - 1)) - 1) * 100;
 }
@@ -51,7 +51,7 @@ export function computeBurn(rows: MonthRow[]): number {
   const cash = rows.map((r) => r.cashBalance).filter((c): c is number => c != null);
   if (cash.length >= 2) {
     const recent = cash.slice(-4);
-    const drops = recent.slice(1).map((c, i) => recent[i] - c);
+    const drops = recent.slice(1).map((c, i) => recent[i]! - c);
     return Math.max(0, avg(drops));
   }
   return Math.max(0, -avg(rows.slice(-3).map((r) => r.netProfit)));
@@ -66,7 +66,7 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
   const netMargin = totalRevenue > 0 ? (totalNet / totalRevenue) * 100 : null;
 
   const cashRows = rows.filter((r) => r.cashBalance != null);
-  const latestCash = cashRows.length ? (cashRows[cashRows.length - 1].cashBalance as number) : null;
+  const latestCash = cashRows.length ? (cashRows[cashRows.length - 1]!.cashBalance as number) : null;
   const burnRate = computeBurn(rows);
   const runwayMonths = latestCash != null ? computeRunway(latestCash, burnRate) : null;
 
@@ -144,7 +144,7 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
   const concerns = sorted.filter((c) => c.tone !== "good").slice(0, 3);
   const goods = sorted.filter((c) => c.tone === "good");
   const picked = [...concerns, ...goods].slice(0, 4);
-  if (goods.length && !picked.some((p) => p.tone === "good")) picked[picked.length - 1] = goods[0];
+  if (goods.length && !picked.some((p) => p.tone === "good")) picked[picked.length - 1] = goods[0]!;
   const order = { bad: 0, warn: 1, good: 2 } as const;
   const insights = picked
     .sort((a, b) => order[a.tone] - order[b.tone])
@@ -172,6 +172,6 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
     insights,
     series,
     monthsCount: rows.length,
-    periodLabel: rows.length ? `${series[0].label} – ${series[series.length - 1].label}` : "",
+    periodLabel: rows.length ? `${series[0]!.label} – ${series[series.length - 1]!.label}` : "",
   };
 }

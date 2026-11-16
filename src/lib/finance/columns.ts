@@ -94,16 +94,16 @@ export function parseMonth(raw: unknown): Date | null {
   if (raw instanceof Date && !isNaN(raw.getTime())) return new Date(raw.getFullYear(), raw.getMonth(), 1);
   const s = String(raw).trim();
   let m: RegExpMatchArray | null;
-  if ((m = s.match(/^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?/))) return new Date(+m[1], +m[2] - 1, 1);
-  if ((m = s.match(/^(\d{1,2})[-/.](\d{4})$/))) return new Date(+m[2], +m[1] - 1, 1);
+  if ((m = s.match(/^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?/))) return new Date(+m[1]!, +m[2]! - 1, 1);
+  if ((m = s.match(/^(\d{1,2})[-/.](\d{4})$/))) return new Date(+m[2]!, +m[1]! - 1, 1);
   if ((m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})$/))) {
     // Assume M/D/Y (Excel default export); month-level precision is all we need.
-    const y = +m[3] < 100 ? 2000 + +m[3] : +m[3];
-    return new Date(y, +m[1] - 1, 1);
+    const y = +m[3]! < 100 ? 2000 + +m[3]! : +m[3]!;
+    return new Date(y, +m[1]! - 1, 1);
   }
   if ((m = s.match(/^([a-z]{3,9})[\s\-',.]*(\d{2,4})$/i))) {
-    const idx = MONTHS.indexOf(m[1].slice(0, 3).toLowerCase());
-    if (idx >= 0) return new Date(+m[2] < 100 ? 2000 + +m[2] : +m[2], idx, 1);
+    const idx = MONTHS.indexOf(m[1]!.slice(0, 3).toLowerCase());
+    if (idx >= 0) return new Date(+m[2]! < 100 ? 2000 + +m[2]! : +m[2]!, idx, 1);
   }
   if (/^\d{5}(\.\d+)?$/.test(s)) {
     const serial = Number(s);
@@ -125,7 +125,7 @@ export function parseMonth(raw: unknown): Date | null {
 export function formatMonthLabel(raw: string): string {
   const d = parseMonth(raw);
   if (!d) return raw;
-  return `${MONTHS[d.getMonth()].replace(/^./, (c) => c.toUpperCase())} '${String(d.getFullYear()).slice(2)}`;
+  return `${MONTHS[d.getMonth()]!.replace(/^./, (c) => c.toUpperCase())} '${String(d.getFullYear()).slice(2)}`;
 }
 
 export function buildRows(sheet: RawSheet, mapping: ColumnMapping): MonthRow[] {

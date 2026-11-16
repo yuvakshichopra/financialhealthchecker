@@ -26,7 +26,7 @@ export async function parseFinancialFile(file: File): Promise<RawSheet> {
   const wb = XLSX.read(buf, { type: "array", cellDates: true });
   const sheetName = wb.SheetNames[0];
   if (!sheetName) throw new Error("That workbook has no sheets.");
-  const ws = wb.Sheets[sheetName];
+  const ws = wb.Sheets[sheetName]!;
   const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
     defval: "",
     raw: true,

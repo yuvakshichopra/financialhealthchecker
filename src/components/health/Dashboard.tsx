@@ -15,7 +15,7 @@ interface Props {
   sourceLabel: string;
   currency: CurrencyCode;
   onCurrencyChange: (c: CurrencyCode) => void;
-  onRemap?: () => void;
+  onRemap?: (() => void) | undefined;
   onReset: () => void;
 }
 

@@ -61,6 +61,6 @@ describe("column detection & parsing", () => {
       { fileName: "x.csv", headers: ["Month", "Revenue", "COGS", "Opex"], rows: [{ Month: "Jan 2026", Revenue: "100", COGS: "20", Opex: "50" }] },
       { month: "Month", revenue: "Revenue", cogs: "COGS", opex: "Opex", netProfit: null, cashBalance: null, receivables: null },
     );
-    expect(rows[0].netProfit).toBe(30);
+    expect(rows[0]!.netProfit).toBe(30);
   });
 });
