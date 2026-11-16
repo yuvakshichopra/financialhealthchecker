@@ -126,7 +126,11 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
   }
 
   if (revenueGrowth != null && expenseGrowth != null && expenseGrowth > revenueGrowth + 1)
-    candidates.push({ tone: "bad", rank: 9, title: "Costs are outrunning revenue", body: `Expenses are growing ${expenseGrowth.toFixed(1)}% a month vs revenue at ${revenueGrowth.toFixed(1)}%. This is where money leaks — start with your biggest expense line.` });
+    candidates.push(
+      revenueGrowth >= 0
+        ? { tone: "bad", rank: 9, title: "Costs are outrunning revenue", body: `Expenses are growing ${expenseGrowth.toFixed(1)}% a month vs revenue at ${revenueGrowth.toFixed(1)}%. This is where money leaks — start with your biggest expense line.` }
+        : { tone: "bad", rank: 9, title: "Sales are falling, costs aren't", body: "Your spending hasn't adjusted to the drop in revenue. Go through every recurring cost and ask: would I sign up for this again today?" },
+    );
 
   if (latest?.receivables != null && latest.revenue > 0 && latest.receivables > latest.revenue * 1.2)
     candidates.push({ tone: "warn", rank: 8, title: `${money(latest.receivables)} stuck in unpaid invoices`, body: "That's more than a month of revenue sitting in other people's bank accounts. Chasing it is the cheapest money you'll ever raise." });
@@ -141,8 +145,8 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
   }
 
   const sorted = [...candidates].sort((a, b) => b.rank - a.rank);
-  const concerns = sorted.filter((c) => c.tone !== "good").slice(0, 3);
   const goods = sorted.filter((c) => c.tone === "good");
+  const concerns = sorted.filter((c) => c.tone !== "good").slice(0, goods.length ? 3 : 4);
   const picked = [...concerns, ...goods].slice(0, 4);
   if (goods.length && !picked.some((p) => p.tone === "good")) picked[picked.length - 1] = goods[0]!;
   const order = { bad: 0, warn: 1, good: 2 } as const;
