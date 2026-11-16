@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Financial files are parsed only in the browser (papaparse / SheetJS loaded via dynamic import in `src/lib/finance/parse-file.ts`) — privacy promise: no upload, no backend.
+- Scoring, metrics and insight rules live in pure functions in `src/lib/finance/analyze.ts`, covered by `analyze.test.ts`; UI components only render the `Analysis` result.
+- SheetJS is installed from the official CDN tarball, not the outdated npm `xlsx` package.
