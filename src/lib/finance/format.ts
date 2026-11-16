@@ -22,3 +22,11 @@ export function formatPct(n: number | null, digits = 1) {
   if (n == null || !Number.isFinite(n)) return "—";
   return `${n.toFixed(digits)}%`;
 }
+
+export function currencySymbol(currency: CurrencyCode) {
+  return (
+    new Intl.NumberFormat(locale(currency), { style: "currency", currency })
+      .formatToParts(0)
+      .find((p) => p.type === "currency")?.value ?? "$"
+  );
+}

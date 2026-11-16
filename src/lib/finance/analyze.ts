@@ -1,5 +1,5 @@
 import { formatMonthLabel } from "./columns";
-import { formatMoney, type CurrencyCode } from "./format";
+import { currencySymbol, formatMoney, type CurrencyCode } from "./format";
 import type { Analysis, HealthStatus, Insight, MonthRow } from "./types";
 
 /** Score bands: 70+ is Healthy, 40–69 Needs Attention, below 40 Critical. */
@@ -134,7 +134,8 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
   if (netMargin != null && totalRevenue > 0) {
     if (netMargin < 0) {
       const spendPerUnit = (totalRevenue - totalNet) / totalRevenue;
-      candidates.push({ tone: netMargin < -50 ? "bad" : "warn", rank: netMargin < -50 ? 6 : 3, title: `You spend ${formatMoney(spendPerUnit, currency, false).replace(/\.00$/, "")}… for every ${formatMoney(1, currency, false)} earned`, body: `More precisely, ${spendPerUnit.toFixed(2)}× your revenue goes out the door. Normal for an early startup — as long as it's shrinking over time.` });
+      const sym = currencySymbol(currency);
+      candidates.push({ tone: netMargin < -50 ? "bad" : "warn", rank: netMargin < -50 ? 6 : 3, title: `You spend ${sym}${spendPerUnit.toFixed(2)} for every ${sym}1 you earn`, body: "Pretty normal for an early startup — as long as that number keeps shrinking every quarter. If it isn't, that's the leak to fix." });
     } else if (netMargin >= 10)
       candidates.push({ tone: "good", rank: 3, title: `Profitable at ${netMargin.toFixed(0)}% net margin`, body: "You're keeping real money from every sale. That gives you options most startups don't have." });
   }
