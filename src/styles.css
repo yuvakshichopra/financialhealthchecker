@@ -170,3 +170,17 @@
     letter-spacing: -0.02em;
   }
 }
+
+/* One-page summary report (window.print -> Save as PDF) */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  html,
+  body {
+    background-color: var(--color-card);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
