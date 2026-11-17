@@ -1,6 +1,6 @@
 import { Activity, AlertTriangle, CheckCircle2, CircleAlert } from "lucide-react";
 import { STATUS_LABEL } from "@/lib/finance/analyze";
-import { formatMoney, formatPct, type CurrencyCode } from "@/lib/finance/format";
+import { formatMoney, type CurrencyCode } from "@/lib/finance/format";
 import type { Analysis, HealthStatus } from "@/lib/finance/types";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
