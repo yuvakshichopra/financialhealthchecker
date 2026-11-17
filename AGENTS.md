@@ -34,3 +34,5 @@ use the editor.
 - Financial files are parsed only in the browser (papaparse / SheetJS loaded via dynamic import in `src/lib/finance/parse-file.ts`) — privacy promise: no upload, no backend.
 - Scoring, metrics and insight rules live in pure functions in `src/lib/finance/analyze.ts`, covered by `analyze.test.ts`; UI components only render the `Analysis` result.
 - SheetJS is installed from the official CDN tarball, not the outdated npm `xlsx` package.
+- Every uploaded grid goes through `sheetFromMatrix` (`clean-sheet.ts`) and amounts through `parseNumber` (`columns.ts`) so messy cells are cleaned before any ratio is computed; both are covered by `clean-sheet.test.ts`.
+- The summary report is a print-only component (`SummaryReport`, `hidden print:block`) exported via `window.print()` → Save as PDF; no PDF library, so data never leaves the device.
