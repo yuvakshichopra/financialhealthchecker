@@ -175,6 +175,9 @@ export function analyze(rows: MonthRow[], currency: CurrencyCode = "USD"): Analy
     breakdown,
     insights,
     series,
+    totalRevenue,
+    totalExpenses: sum(rows.map((r) => r.cogs + r.opex)),
+    totalNetProfit: totalNet,
     monthsCount: rows.length,
     periodLabel: rows.length ? `${series[0]!.label} – ${series[series.length - 1]!.label}` : "",
   };

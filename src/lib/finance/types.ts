@@ -52,6 +52,9 @@ export interface Analysis {
     netProfit: number;
     cash: number | null;
   }[];
+  totalRevenue: number;
+  totalExpenses: number;
+  totalNetProfit: number;
   monthsCount: number;
   periodLabel: string;
 }
