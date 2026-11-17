@@ -135,7 +135,7 @@ export function UploadHero({ onFile, onSample, busy, error }: Props) {
               />
             </div>
 
-            <div className="mx-2 mt-3 flex flex-col gap-2 rounded-2xl border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mx-2 mt-3 flex flex-col gap-2.5 rounded-2xl border bg-background p-3">
               <div className="text-xs leading-relaxed text-muted-foreground">
                 <p className="font-medium text-foreground">Not sure about the format?</p>
                 <p>
@@ -143,7 +143,7 @@ export function UploadHero({ onFile, onSample, busy, error }: Props) {
                   Balance, Receivables. Symbols like ₹ or $ and commas are fine.
                 </p>
               </div>
-              <Button variant="outline" size="sm" className="shrink-0" onClick={downloadTemplate}>
+              <Button variant="outline" className="w-full" onClick={downloadTemplate}>
                 <Download /> Download Sample CSV Template
               </Button>
             </div>
