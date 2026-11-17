@@ -14,18 +14,61 @@ const BAR: Record<HealthStatus, string> = {
   critical: "bg-warning",
 };
 
-const SUMMARY: Record<HealthStatus, string> = {
+export const SUMMARY: Record<HealthStatus, string> = {
   healthy: "Solid fundamentals. Keep an eye on the details below.",
   attention: "Some good signs, but a few things need fixing soon.",
   critical: "Real risks here. Act on the insights below this week.",
 };
 
-export function ScoreCard({ analysis }: { analysis: Analysis }) {
-  const { score, status, breakdown } = analysis;
+export function ScoreGauge({
+  score,
+  status,
+  className,
+  numberClassName = "text-6xl",
+}: {
+  score: number;
+  status: HealthStatus;
+  className?: string;
+  numberClassName?: string;
+}) {
   const r = 78;
   const c = 2 * Math.PI * r;
   const arc = 0.75; // 270° gauge
   const filled = (score / 100) * arc * c;
+  return (
+    <div className={cn("relative", className)}>
+      <svg viewBox="0 0 200 200" className="size-full rotate-[135deg]">
+        <circle
+          cx="100"
+          cy="100"
+          r={r}
+          fill="none"
+          strokeWidth="14"
+          strokeLinecap="round"
+          className="stroke-muted"
+          strokeDasharray={`${arc * c} ${c}`}
+        />
+        <circle
+          cx="100"
+          cy="100"
+          r={r}
+          fill="none"
+          strokeWidth="14"
+          strokeLinecap="round"
+          className={cn(STROKE[status], "transition-[stroke-dasharray] duration-1000 ease-out")}
+          strokeDasharray={`${filled} ${c}`}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className={cn("font-display font-semibold tabular", numberClassName)}>{score}</span>
+        <span className="text-sm text-muted-foreground">out of 100</span>
+      </div>
+    </div>
+  );
+}
+
+export function ScoreCard({ analysis }: { analysis: Analysis }) {
+  const { score, status, breakdown } = analysis;
 
   return (
     <div className="flex h-full flex-col rounded-3xl border bg-card p-6 shadow-card">
@@ -36,34 +79,7 @@ export function ScoreCard({ analysis }: { analysis: Analysis }) {
         </Badge>
       </div>
 
-      <div className="relative mx-auto mt-4 size-52">
-        <svg viewBox="0 0 200 200" className="size-full rotate-[135deg]">
-          <circle
-            cx="100"
-            cy="100"
-            r={r}
-            fill="none"
-            strokeWidth="14"
-            strokeLinecap="round"
-            className="stroke-muted"
-            strokeDasharray={`${arc * c} ${c}`}
-          />
-          <circle
-            cx="100"
-            cy="100"
-            r={r}
-            fill="none"
-            strokeWidth="14"
-            strokeLinecap="round"
-            className={cn(STROKE[status], "transition-[stroke-dasharray] duration-1000 ease-out")}
-            strokeDasharray={`${filled} ${c}`}
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-display text-6xl font-semibold tabular">{score}</span>
-          <span className="text-sm text-muted-foreground">out of 100</span>
-        </div>
-      </div>
+      <ScoreGauge score={score} status={status} className="mx-auto mt-4 size-52" />
       <p className="-mt-2 text-center text-sm text-muted-foreground">{SUMMARY[status]}</p>
 
       <div className="mt-6 space-y-3 border-t pt-5">

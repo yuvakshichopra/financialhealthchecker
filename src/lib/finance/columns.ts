@@ -68,21 +68,48 @@ export function mappingIssues(mapping: ColumnMapping): string[] {
   return issues;
 }
 
-/** Parses "$1,200", "(1,200)", "-1200", "12.5%" into numbers. */
+const SUFFIX: Record<string, number> = {
+  k: 1e3, thousand: 1e3,
+  m: 1e6, mn: 1e6, mm: 1e6, million: 1e6,
+  b: 1e9, bn: 1e9, billion: 1e9,
+  l: 1e5, lac: 1e5, lacs: 1e5, lakh: 1e5, lakhs: 1e5,
+  cr: 1e7, crore: 1e7, crores: 1e7,
+};
+
+/**
+ * Cleans messy money cells into numbers: currency symbols/codes (₹ $ € £ Rs. INR),
+ * thousands separators (1,20,000 · 45,000.50 · 1 000 · 1.234,56), accounting
+ * negatives "(1,200)", leading/trailing minus signs, and k / M / L / Cr suffixes.
+ * Blank, "N/A", "-" and other digit-free cells become null.
+ */
 export function parseNumber(v: unknown): number | null {
   if (typeof v === "number") return Number.isFinite(v) ? v : null;
-  if (v == null) return null;
-  let s = String(v).trim();
-  if (!s || s === "-" || s === "—") return null;
+  if (v == null || typeof v === "boolean" || v instanceof Date) return null;
+  let s = String(v)
+    .replace(/[\u00a0\u2007\u202f\ufeff]/g, " ")
+    .replace(/[\u2212\u2012\u2013\u2014]/g, "-")
+    .trim();
+  if (!s) return null;
   let negative = false;
   if (/^\(.*\)$/.test(s)) {
     negative = true;
-    s = s.slice(1, -1);
+    s = s.slice(1, -1).trim();
   }
-  if (s.includes("-") && /^[^\d]*-/.test(s)) negative = true;
-  const cleaned = s.replace(/[^0-9.]/g, "");
-  if (!cleaned) return null;
-  const n = Number(cleaned);
+  const firstDigit = s.search(/\d/);
+  if (firstDigit < 0) return null;
+  if (s.slice(0, firstDigit).includes("-") || /-\s*$/.test(s)) negative = true;
+
+  let body = s.slice(firstDigit);
+  // European style "1.234,56" -> "1234.56"
+  if (/^\d{1,3}(\.\d{3})+,\d{1,2}(?!\d)/.test(body)) body = body.replace(/\./g, "").replace(",", ".");
+  // Drop thousands separators between digits: commas, apostrophes, spaces.
+  body = body.replace(/(\d)[,'\s](?=\d)/g, "$1");
+
+  const m = body.match(/^\d+(?:\.\d+)?/);
+  if (!m) return null;
+  let n = Number(m[0]);
+  const word = body.slice(m[0].length).trim().toLowerCase().match(/^[a-z]+/)?.[0];
+  if (word && SUFFIX[word]) n *= SUFFIX[word];
   if (!Number.isFinite(n)) return null;
   return negative ? -n : n;
 }

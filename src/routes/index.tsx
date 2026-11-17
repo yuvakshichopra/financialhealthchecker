@@ -69,7 +69,7 @@ function Index() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
+      <SiteHeader className="print:hidden" />
       <main className="flex-1">
         {stage.kind === "upload" && (
           <UploadHero
@@ -106,7 +106,7 @@ function Index() {
           />
         )}
       </main>
-      <SiteFooter />
+      <SiteFooter className="print:hidden" />
     </div>
   );
 }
