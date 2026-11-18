@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { createRouter, rootRouteId } from "@tanstack/react-router";
+import { createMemoryHistory, createRouter, rootRouteId } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
@@ -13,5 +13,17 @@ describe("App routing", () => {
     const matches = router.matchRoutes("/");
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
+  });
+
+  it("matches the homepage under a GitHub Pages repository subdirectory", () => {
+    const router = createRouter({
+      routeTree,
+      basepath: "/financial-health-checker",
+      history: createMemoryHistory({ initialEntries: ["/financial-health-checker/"] }),
+      context: { queryClient: new QueryClient() },
+    });
+
+    expect(router.matchRoutes(router.latestLocation).at(-1)?.routeId).toBe("/");
+    expect(router.buildLocation({ to: "/" }).href).toBe("/financial-health-checker/");
   });
 });

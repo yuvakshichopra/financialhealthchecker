@@ -1,0 +1,82 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run tests
+        run: bun run test
+
+      - name: Build static homepage
+        env:
+          GITHUB_PAGES: "true"
+          VITE_PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: bun run build
+
+      - name: Stage static files in dist
+        run: |
+          # TanStack Start emits browser files separately from its server bundle.
+          test -f dist/client/index.html
+          cp -a dist/client /tmp/pages-static
+          rm -rf dist
+          mkdir dist
+          cp -a /tmp/pages-static/. dist/
+          # Start's SSR manifest normalizes './' to '/./'; restore relative assets.
+          python3 - <<'PY'
+          from pathlib import Path
+          page = Path('dist/index.html')
+          html = page.read_text().replace('/./assets/', './assets/').replace('/assets/', './assets/')
+          html = html.replace('href="/favicon.ico"', 'href="./favicon.ico"')
+          page.write_text(html)
+          PY
+          touch dist/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

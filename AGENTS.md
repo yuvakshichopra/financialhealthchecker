@@ -31,6 +31,8 @@ use the editor.
 
 ## Project rules
 
+- GitHub Pages CI prerenders the public upload screen and stages only static client files into `dist`; never publish the server bundle to static hosting.
+- Keep Vite assets relative and supply the Pages base path to the client router so repository subdirectory deployments resolve correctly.
 - Financial files are parsed only in the browser (papaparse / SheetJS loaded via dynamic import in `src/lib/finance/parse-file.ts`) — privacy promise: no upload, no backend.
 - Scoring, metrics and insight rules live in pure functions in `src/lib/finance/analyze.ts`, covered by `analyze.test.ts`; UI components only render the `Analysis` result.
 - SheetJS is installed from the official CDN tarball, not the outdated npm `xlsx` package.
