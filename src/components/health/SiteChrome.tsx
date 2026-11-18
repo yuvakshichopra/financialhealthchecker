@@ -23,7 +23,15 @@ export function SiteFooter({ className }: { className?: string }) {
       <div className="flex flex-col items-center justify-between gap-2 border-t pt-6 text-xs text-muted-foreground sm:flex-row">
         <span>Your data never leaves this browser. Not financial advice.</span>
         <span>
-          Built by <span className="font-semibold text-foreground">Yuvakshi Chopra</span>
+          Built by{" "}
+          <a
+            href="https://www.linkedin.com/in/yuvakshichopra/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-foreground underline-offset-2 hover:underline"
+          >
+            Yuvakshi Chopra
+          </a>
         </span>
       </div>
     </footer>
