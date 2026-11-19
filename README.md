@@ -1,44 +1,42 @@
-# Financialhealthchecker
+# Financial Health Checker
 
-Build a clean, modern "Business Financial Health Checker" web app designed for startup founders and small business owners.
+A browser-based financial analysis tool for startup founders and small business owners.
 
-Core Flow:
+Financial Health Checker turns financial spreadsheets into a dashboard that makes it easier to understand how a business is performing. Upload your data to view key financial metrics, track cash flow, and identify areas that may need attention.
 
-Landing / Upload Screen: A clean hero section explaining that founders can upload their financial sheet (CSV or Excel .xlsx / .xls) to get an instant health check. Include a drag-and-drop file uploader AND a "Try with Sample Data" button (pre-loaded with realistic monthly startup revenue, expenses, cash balance, and receivables) so visitors can test it with one click without uploading a file.
+## Features
 
-File Parsing: Use papaparse and xlsx libraries in the browser so all data stays private on the user's device (no backend upload needed). Automatically detect columns like Date/Month, Revenue, COGS, Operating Expenses, Net Profit, and Cash Balance—and let the user quickly map columns if the names differ.
+- **Financial Data Upload:** Supports CSV and Excel files (`.csv`, `.xlsx`, `.xls`).
+- **Sample Data:** Try the tool without uploading your own financial records.
+- **Automatic Column Detection:** Recognises common fields such as revenue, expenses, net profit, and cash balance.
+- **Column Mapping:** Manually match spreadsheet columns when automatic detection doesn't get them right.
+- **Financial Health Score:** An overall score out of 100, categorised as Healthy, Needs Attention, or Critical.
+- **Key Financial Metrics:** Gross profit margin, net profit margin, monthly burn rate, and cash runway.
+- **Visual Dashboard:** Monthly revenue vs. expenses and cash balance trend charts.
+- **Financial Insights:** Short, plain-English observations about business performance and potential areas of concern.
 
-Financial Health Dashboard: Once loaded, show:
+## Privacy
 
-An overall Financial Health Score (0–100) with a clear status badge (Healthy, Needs Attention, or Critical).
+Financial data is processed directly in the browser using PapaParse and XLSX. Files do not need to be uploaded to an external backend for analysis.
 
-4 Key Metric Cards: Gross Profit Margin %, Net Profit Margin %, Monthly Burn Rate, and Cash Runway (in months).
+## Tech Stack
 
-2 Clean Charts: A monthly Revenue vs. Expenses bar/line chart, and a Cash Balance trend line.
+- React
+- TypeScript / JavaScript
+- PapaParse
+- XLSX
+- Charting and UI libraries
 
-Plain-English Insights: 3–4 short, honest bullet points explaining what is going well and where money is leaking (written like a smart friend, not a stiff banker).
+## Live Demo
 
-Design: Minimalist, crisp fintech aesthetic (off-white background, deep navy/slate text, emerald green for healthy metrics, coral red for warnings). Include a small footer credit: "Built by Yuvakshi Chopra".
+[financialhealthchecker.lovable.app](https://financialhealthchecker.lovable.app/)
 
-This project was built with [Lovable](https://lovable.dev).
+## Run Locally
 
-**Live app**: https://financialhealthchecker.lovable.app
+Make sure you have Node.js and npm installed.
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c4750894-ab6b-438b-84a4-ec59b315cf31).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
+git clone YOUR-REPOSITORY-URL
+cd YOUR-REPOSITORY-NAME
+npm install
 npm run dev
-```
